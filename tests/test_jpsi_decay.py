@@ -2,9 +2,7 @@
 Module meant to test JpsiDecay class and its dependent, Momenta
 '''
 import numpy
-from dmu.generic import utilities as gut
-with gut.silent_import():
-    import tensorflow as tf
+import vector
 
 from ecal_calibration import JpsiDecay
 from ecal_calibration import Momenta 
@@ -34,13 +32,14 @@ def test_simple_momenta() -> None:
     Check that we can actually extract numpy arrays with
     momenta
     '''
-    nparticles= 100
-    particles = tf.ones(shape=(nparticles, 4))
+    nparticles = 2 
+    v1  = vector.obj(px=1, py=1, pz=1, e=1)
+    v2  = vector.obj(px=2, py=2, pz=2, e=2)
 
-    obj = Momenta(particles=particles)
-    px  = obj['px']
-    py  = obj['py']
-    pz  = obj['pz']
+    obj = Momenta(name = 'e_1', particles=[v1, v2])
+    px  = obj.as_numpy('px')
+    py  = obj.as_numpy('py')
+    pz  = obj.as_numpy('pz')
 
     assert isinstance(px, numpy.ndarray)
     assert isinstance(py, numpy.ndarray)
