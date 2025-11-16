@@ -5,16 +5,17 @@ import jax
 import pandas as pnd
 import phasespace
 
-from jax        import numpy
-from tensorflow import Tensor
-from typing     import Final
-from pydantic   import BaseModel
+from dataclasses import dataclass
+from jax         import numpy
+from tensorflow  import Tensor
+from typing      import Final
 
 JPSI_MASS     : Final[float] = 3190.
 ELECTRON_MASS : Final[float] = 0.511
 
 # ----------------------
-class Momenta(BaseModel):
+@dataclass
+class Momenta:
     '''
     Class meant to represent the momentum of a set of particles
     '''
