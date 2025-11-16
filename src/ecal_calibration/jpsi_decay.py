@@ -66,18 +66,18 @@ class JpsiDecay:
         self._key      = jax.random.PRNGKey(0)
         self._nentries = nentries 
     # ----------------------
-    def _split_electrons(self, electrons : Momenta) -> tuple[Momenta, Momenta]:
+    def _split_electron(self, electron : Momentum) -> tuple[Momentum, Momentum]:
         '''
         Parameters
         -------------
-        electrons: Momenta instance with electrons kinematics 
+        electron: 4-vector representing electron 
 
         Returns
         -------------
-        Momenta instance for electron and brem photon
+        Tuple with 4-vectors of electron and emulated brem
         '''
 
-        return electrons, electrons
+        return electron, electron
     # ----------------------
     def get_dataframe(self) -> pnd.DataFrame:
         '''
