@@ -14,8 +14,20 @@ def test_simple_jpsi_decay() -> None:
     '''
     Simplest test
     '''
-    obj = JpsiDecay()
+    nentries = 100
+
+    obj = JpsiDecay(nentries = nentries)
     df  = obj.get_dataframe()
+
+    columns = set(df.columns.to_list())
+    assert columns == {
+        'g1_co', 'g1_rw', 'g1_ar',
+        'gm_px', 'gm_py', 'gm_pz',
+        'e1_px', 'e1_py', 'e1_pz',
+        'e2_px', 'e2_py', 'e2_pz',
+    } 
+
+    assert len(df) == nentries 
 # ----------------------
 def test_simple_momenta() -> None:
     '''
