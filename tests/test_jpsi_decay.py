@@ -45,10 +45,11 @@ def _plot_mass(
     '''
     l_e1 = _vector_from_df(name='e1', df=df)
     l_e2 = _vector_from_df(name='e2', df=df)
+    l_gm = _vector_from_df(name='gm', df=df)
 
     l_mass = []
-    for e1, e2 in zip(l_e1, l_e2):
-        jpsi : Momentum = e1 + e2 # type: ignore
+    for e1, e2, gm in zip(l_e1, l_e2, l_gm):
+        jpsi : Momentum = e1 + e2 + gm# type: ignore
         l_mass.append(jpsi.m)
 
     plt.hist(l_mass, bins=100)
