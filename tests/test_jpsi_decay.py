@@ -6,6 +6,7 @@ import vector
 import pandas            as pnd
 import matplotlib.pyplot as plt
 
+from pathlib          import Path
 from vector           import MomentumObject4D as Momentum
 from ecal_calibration import JpsiDecay
 from ecal_calibration import Momenta 
@@ -34,7 +35,9 @@ def _vector_from_df(name : str, df : pnd.DataFrame) -> list[Momentum]:
 
     return l_particle
 # ----------------------
-def _plot_mass(df : pnd.DataFrame) -> None:
+def _plot_mass(
+    tmp_path : Path,
+    df : pnd.DataFrame) -> None:
     '''
     Parameters
     -------------
@@ -49,9 +52,10 @@ def _plot_mass(df : pnd.DataFrame) -> None:
         l_mass.append(jpsi.m)
 
     plt.hist(l_mass, bins=100)
-    plt.show()
+    plt.savefig(tmp_path / 'distribution.png')
+    plt.close()
 # ----------------------
-def test_simple_jpsi_decay() -> None:
+def test_simple_jpsi_decay(tmp_path : Path) -> None:
     '''
     Simplest test
     '''
@@ -70,7 +74,7 @@ def test_simple_jpsi_decay() -> None:
 
     assert len(df) == nentries 
 
-    _plot_mass(df=df)
+    _plot_mass(df = df, tmp_path = tmp_path)
 # ----------------------
 def test_simple_momenta() -> None:
     '''
