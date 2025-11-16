@@ -79,6 +79,29 @@ class JpsiDecay:
 
         return electron, electron
     # ----------------------
+    def _particles_from_phsp_data(self, data) -> tuple[Momenta, Momenta]: 
+        '''
+        Parameters
+        -------------
+        data: Object returned by `generate` method in `phasespace` project when `as_vectors` is True
+
+        Returns
+        -------------
+        Class storing 4-vectors of electrons
+        '''
+        try:
+            l_vec = [ entry[1] for entry in data ] 
+        except IndexError as exc:
+            raise IndexError('Cannot extract dictionaries with 4-vectors from data') from exc
+
+        try:
+            l_e_1 = [ vec['p0'] for vec in l_vec ]
+            l_e_2 = [ vec['p1'] for vec in l_vec ]
+        except KeyError as exc:
+            raise KeyError('Cannot extract 4-vectors from lists of dictionaries') from exc
+
+        return Momenta(name = 'e_1', particles=l_e_1), Momenta(name = 'e_2', particles=l_e_2)
+    # ----------------------
     def get_dataframe(self) -> pnd.DataFrame:
         '''
         Returns
@@ -86,12 +109,20 @@ class JpsiDecay:
         Pandas dataframe with columns representing momenta of particles
         '''
 
-        gen           = phasespace.nbody_decay(mass_top = JPSI_MASS, masses = [ELECTRON_MASS, ELECTRON_MASS])
-        _, particles  = gen.generate(n_events = self._nentries)
+        gen  = phasespace.nbody_decay(mass_top = JPSI_MASS, masses = [ELECTRON_MASS, ELECTRON_MASS])
+        data = gen.generate(n_events = self._nentries, as_vectors=True)
+        e_1, e_2 = self._particles_from_phsp_data(data=data)
 
-        e_1           = Momenta(particles = particles['p_0'])
-        e_2           = Momenta(particles = particles['p_1'])
-        e_1, gamma    = self._split_electrons(electrons = e_1)
+        l_ebrem = []
+        l_gamma = []
+        for electron in e_1:
+            ebrem, gamma = self._split_electron(electron=electron)
+
+            l_ebrem.append(ebrem)
+            l_gamma.append(gamma)
+
+        e_1 = Momenta(name='e_1', particles=l_ebrem)
+        g_1 = Momenta(name='g_1', particles=l_gamma)
 
         # --------
         data          = dict()
@@ -99,17 +130,17 @@ class JpsiDecay:
         data['g1_rw'] = jax.random.randint(key=self._key, shape=(self._nentries,), minval=0, maxval=10)
         data['g1_ar'] = jax.random.choice( key=self._key, shape=(self._nentries,), a=numpy.array([0, 1, 2]), )
         # --------
-        data['gm_px'] = gamma['px']
-        data['gm_py'] = gamma['py']
-        data['gm_pz'] = gamma['pz']
+        data['gm_px'] = g_1.as_numpy('px')
+        data['gm_py'] = g_1.as_numpy('py')
+        data['gm_pz'] = g_1.as_numpy('pz')
         # --------
-        data['e1_px'] =   e_1['px']
-        data['e1_py'] =   e_1['py']
-        data['e1_pz'] =   e_1['pz']
+        data['e1_px'] = e_1.as_numpy('px')
+        data['e1_py'] = e_1.as_numpy('py')
+        data['e1_pz'] = e_1.as_numpy('pz')
         # --------
-        data['e2_px'] =   e_2['px'] 
-        data['e2_py'] =   e_2['py'] 
-        data['e2_pz'] =   e_2['pz'] 
+        data['e2_px'] = e_2.as_numpy('px') 
+        data['e2_py'] = e_2.as_numpy('py') 
+        data['e2_pz'] = e_2.as_numpy('pz') 
 
         df = pnd.DataFrame(data)
 
