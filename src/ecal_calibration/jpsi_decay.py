@@ -1,47 +1,55 @@
 '''
 Module holding JpsiDecay class and its dependent class, Momenta
 '''
-from dmu.generic import utilities as gut
+from dmu.generic import utilities        as gut
+from vector      import MomentumObject4D as Momentum
 with gut.silent_import():
     import jax
-    from tensorflow  import Tensor
 
 import numpy
 import pandas as pnd
 import phasespace
 
-from dataclasses import dataclass
-#from jax         import numpy as jnp
-from typing      import Final
+from typing  import Final, Iterator
 
 JPSI_MASS     : Final[float] = 3190.
 ELECTRON_MASS : Final[float] = 0.511
 
 # ----------------------
-@dataclass
 class Momenta:
     '''
     Class meant to represent the momentum of a set of particles
     '''
-    particles : Tensor # Here the vectors with the momenta of each particle will be stored
     # ----------------------
-    def __getitem__(self, key : str) -> numpy.ndarray:
+    def __init__(self, name : str, particles : list[Momentum]) -> None:
         '''
         Parameters
         -------------
-        key: String representing momentum component, e.g. px, py, pz 
+        name     : Name of particle
+        particles: List of 4-vectors associated to particles
+        '''
+        self._name      = name
+        self._particles = particles
+    # ----------------------
+    def __iter__(self) -> Iterator[Momentum]:
+        return iter(self._particles)
+    # ----------------------
+    def as_numpy(self, component : str) -> numpy.ndarray:
+        '''
+        Parameters
+        -------------
+        component: String representing component, i.e. E, px, py, pz
 
         Returns
         -------------
-        Numpy array with numerical values of momentum component
+        Numpy array with numerical value of component
         '''
-        if key not in ['px', 'py', 'pz']:
-            raise ValueError(f'Invalid momentum component: {key}')
+        if component not in ['px', 'py', 'pz']:
+            raise ValueError(f'Invalid component name: {component}')
 
-        index = {'px' : 1, 'py' : 2, 'pz' : 3}[key]
-        matrix= self.particles.numpy()
+        values : list[float] = [ getattr(particle, component) for particle in self._particles ]
 
-        return matrix[:, index]
+        return numpy.array(values)
 # --------------------------
 class JpsiDecay:
     '''
