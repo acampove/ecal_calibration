@@ -1,20 +1,24 @@
 '''
 Module holding JpsiDecay class and its dependent class, Momenta
 '''
-from dmu.generic import utilities        as gut
-from vector      import MomentumObject4D as Momentum
+import vector
+
+from dmu.logging.log_store import LogStore
+from dmu.generic           import utilities        as gut
+from vector                import MomentumObject4D as Momentum
 with gut.silent_import():
     import jax
+    import phasespace
 
 import numpy
 import pandas as pnd
-import phasespace
 
 from typing  import Final, Iterator
 
 JPSI_MASS     : Final[float] = 3190.
 ELECTRON_MASS : Final[float] = 0.511
 
+log=LogStore.add_logger('ecal_calibration:jpsi_decay')
 # ----------------------
 class Momenta:
     '''
