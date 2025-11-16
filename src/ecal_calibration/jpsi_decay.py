@@ -17,6 +17,7 @@ from typing  import Final, Iterator
 
 JPSI_MASS     : Final[float] = 3190.
 ELECTRON_MASS : Final[float] = 0.511
+PHOTON_MASS   : Final[float] = 0.0
 
 log=LogStore.add_logger('ecal_calibration:jpsi_decay')
 # ----------------------
@@ -51,7 +52,14 @@ class Momenta:
         '''
         value = getattr(particle, component)
 
-        return value + numpy.random.normal(scale = 0.03* abs(value))
+        if   self._name in ['e_1', 'e_2']:
+            resolution = 0.01
+        elif self._name == 'g_1':
+            resolution = 0.05
+        else:
+            raise ValueError(f'Invalid component: {self._name}')
+
+        return value + numpy.random.normal(scale = resolution * abs(value))
     # ----------------------
     def as_numpy(self, component : str) -> numpy.ndarray:
         '''
