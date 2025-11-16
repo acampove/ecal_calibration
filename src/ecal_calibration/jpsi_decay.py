@@ -33,7 +33,7 @@ class Momenta:
         particles: List of 4-vectors associated to particles
         '''
         self._name      = name
-        self._particles = particles
+        self._particles = particles 
     # ----------------------
     def __iter__(self) -> Iterator[Momentum]:
         return iter(self._particles)
