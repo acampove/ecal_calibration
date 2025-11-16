@@ -15,6 +15,10 @@ uproot  = '*'
 vector  = '*'
 pyarrow = '*'
 numpy   = '*'
+jax     = '*'
+jaxlib  = '*'
+optax   = '*'
+phasespace = '*'
 dask    = {version = '*', extras=['distributed']} 
 pytest  = {version = '*',       optional = true }
 torch   = {version = '*',       optional = true }
