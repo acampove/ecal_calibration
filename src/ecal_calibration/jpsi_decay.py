@@ -48,7 +48,7 @@ class Momenta:
         -------------
         Numpy array with numerical value of component
         '''
-        if component not in ['px', 'py', 'pz']:
+        if component not in ['px', 'py', 'pz', 'e']:
             raise ValueError(f'Invalid component name: {component}')
 
         values : list[float] = [ getattr(particle, component) for particle in self._particles ]
@@ -112,7 +112,6 @@ class JpsiDecay:
         -------------
         Pandas dataframe with columns representing momenta of particles
         '''
-
         gen  = phasespace.nbody_decay(mass_top = JPSI_MASS, masses = [ELECTRON_MASS, ELECTRON_MASS])
         data = gen.generate(n_events = self._nentries, as_vectors=True)
         e_1, e_2 = self._particles_from_phsp_data(data=data)
@@ -137,14 +136,17 @@ class JpsiDecay:
         data['gm_px'] = g_1.as_numpy('px')
         data['gm_py'] = g_1.as_numpy('py')
         data['gm_pz'] = g_1.as_numpy('pz')
+        data['gm_e' ] = g_1.as_numpy('e' )
         # --------
         data['e1_px'] = e_1.as_numpy('px')
         data['e1_py'] = e_1.as_numpy('py')
         data['e1_pz'] = e_1.as_numpy('pz')
+        data['e1_e' ] = e_1.as_numpy('e' )
         # --------
         data['e2_px'] = e_2.as_numpy('px') 
         data['e2_py'] = e_2.as_numpy('py') 
         data['e2_pz'] = e_2.as_numpy('pz') 
+        data['e2_e' ] = e_2.as_numpy('e' )
 
         df = pnd.DataFrame(data)
 
