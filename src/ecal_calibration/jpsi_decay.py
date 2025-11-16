@@ -38,6 +38,21 @@ class Momenta:
     def __iter__(self) -> Iterator[Momentum]:
         return iter(self._particles)
     # ----------------------
+    def _component_from_particle(self, particle : Momentum, component : str) -> float:
+        '''
+        Parameters
+        -------------
+        particle: Object representing 4-vector
+        component: E.g. px, py, pz, e
+
+        Returns
+        -------------
+        Numerical value of component
+        '''
+        value = getattr(particle, component)
+
+        return value + numpy.random.normal(scale = 0.03* abs(value))
+    # ----------------------
     def as_numpy(self, component : str) -> numpy.ndarray:
         '''
         Parameters
@@ -51,7 +66,7 @@ class Momenta:
         if component not in ['px', 'py', 'pz', 'e']:
             raise ValueError(f'Invalid component name: {component}')
 
-        values : list[float] = [ getattr(particle, component) for particle in self._particles ]
+        values : list[float] = [ self._component_from_particle(particle, component) for particle in self._particles ]
 
         return numpy.array(values)
 # --------------------------
