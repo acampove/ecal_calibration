@@ -3,9 +3,9 @@ Module holding JpsiDecay class and its dependent class, Momenta
 '''
 from dmu.generic import utilities as gut
 with gut.silent_import():
+    import jax
     from tensorflow  import Tensor
 
-import jax
 import numpy
 import pandas as pnd
 import phasespace
@@ -73,10 +73,6 @@ class JpsiDecay:
     # ----------------------
     def get_dataframe(self) -> pnd.DataFrame:
         '''
-        Parameters
-        -------------
-        
-
         Returns
         -------------
         Pandas dataframe with columns representing momenta of particles
