@@ -100,6 +100,8 @@ class JpsiDecay:
     # ----------------------
     def _particles_from_phsp_data(self, data) -> tuple[Momenta, Momenta]: 
         '''
+        This is where we transition from the data provided by `phasespace` (messy) to our code
+
         Parameters
         -------------
         data: Object returned by `generate` method in `phasespace` project when `as_vectors` is True
@@ -109,15 +111,31 @@ class JpsiDecay:
         Class storing 4-vectors of electrons
         '''
         try:
-            l_vec = [ entry[1] for entry in data ] 
-        except IndexError as exc:
-            raise IndexError('Cannot extract dictionaries with 4-vectors from data') from exc
+            d_particles = data[1]
+            e_1 = d_particles['p_0']
+            e_2 = d_particles['p_1']
+        except Exception as exc:
+            log.error(f'Size: {len(data)}')
+            log.error(type(data))
+            log.error(type(data[1]))
+            log.error(data[1].keys())
+            raise Exception('Cannot extract dictionary with 4-vectors information from data') from exc
 
         try:
-            l_e_1 = [ vec['p0'] for vec in l_vec ]
-            l_e_2 = [ vec['p1'] for vec in l_vec ]
-        except KeyError as exc:
-            raise KeyError('Cannot extract 4-vectors from lists of dictionaries') from exc
+            l_f_1 : list[tuple[float,float,float,float]] = e_1.tolist()
+            l_f_2 : list[tuple[float,float,float,float]] = e_2.tolist()
+        except Exception as exc:
+            raise Exception('Cannot extract 4-vectors from lists of dictionaries') from exc
+
+        l_e_1 = []
+        for px, py, pz, e in l_f_1:
+            particle = vector.obj(px=px, py=py, pz=pz, e=e)
+            l_e_1.append(particle)
+
+        l_e_2 = []
+        for px, py, pz, e in l_f_2:
+            particle = vector.obj(px=px, py=py, pz=pz, e=e)
+            l_e_2.append(particle)
 
         return Momenta(name = 'e_1', particles=l_e_1), Momenta(name = 'e_2', particles=l_e_2)
     # ----------------------
