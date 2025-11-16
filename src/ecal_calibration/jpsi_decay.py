@@ -1,13 +1,17 @@
 '''
 Module holding JpsiDecay class and its dependent class, Momenta
 '''
+from dmu.generic import utilities as gut
+with gut.silent_import():
+    from tensorflow  import Tensor
+
 import jax
+import numpy
 import pandas as pnd
 import phasespace
 
 from dataclasses import dataclass
-from jax         import numpy
-from tensorflow  import Tensor
+#from jax         import numpy as jnp
 from typing      import Final
 
 JPSI_MASS     : Final[float] = 3190.
