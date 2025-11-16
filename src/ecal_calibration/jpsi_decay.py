@@ -103,8 +103,14 @@ class JpsiDecay:
         -------------
         Tuple with 4-vectors of electron and emulated brem
         '''
+        pt    = electron.pt * 0.2
+        eta   = electron.eta
+        phi   = electron.phi
 
-        return electron, electron
+        gamma    = vector.obj(pt=pt, eta=eta, phi=phi, mass=PHOTON_MASS)
+        electron = electron - gamma # type: ignore
+
+        return electron, gamma 
     # ----------------------
     def _particles_from_phsp_data(self, data) -> tuple[Momenta, Momenta]: 
         '''
