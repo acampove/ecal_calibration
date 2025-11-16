@@ -15,6 +15,7 @@ import pandas as pnd
 
 from typing  import Final, Iterator
 
+RANDOM_KEY    : Final        = jax.random.PRNGKey(0)
 JPSI_MASS     : Final[float] = 3190.
 ELECTRON_MASS : Final[float] = 0.511
 PHOTON_MASS   : Final[float] = 0.0
@@ -90,7 +91,6 @@ class JpsiDecay:
         -------------
         nentries: Number of entries
         '''
-        self._key      = jax.random.PRNGKey(0)
         self._nentries = nentries 
     # ----------------------
     def _split_electron(self, electron : Momentum) -> tuple[Momentum, Momentum]:
@@ -176,9 +176,9 @@ class JpsiDecay:
 
         # --------
         data          = dict()
-        data['g1_co'] = jax.random.randint(key=self._key, shape=(self._nentries,), minval=0, maxval=10)
-        data['g1_rw'] = jax.random.randint(key=self._key, shape=(self._nentries,), minval=0, maxval=10)
-        data['g1_ar'] = jax.random.choice( key=self._key, shape=(self._nentries,), a=numpy.array([0, 1, 2]), )
+        data['g1_co'] = jax.random.randint(key=RANDOM_KEY, shape=(self._nentries,), minval=0, maxval=10)
+        data['g1_rw'] = jax.random.randint(key=RANDOM_KEY, shape=(self._nentries,), minval=0, maxval=10)
+        data['g1_ar'] = jax.random.choice( key=RANDOM_KEY, shape=(self._nentries,), a=numpy.array([0, 1, 2]), )
         # --------
         data['gm_px'] = g_1.as_numpy('px')
         data['gm_py'] = g_1.as_numpy('py')
