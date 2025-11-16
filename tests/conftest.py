@@ -5,7 +5,6 @@ import os
 import logging
 import pytest
 import mplhep
-import matplotlib
 import matplotlib.pyplot as plt
 
 from dask.distributed      import Client
@@ -19,7 +18,6 @@ def pytest_configure(config : pytest.Config) -> None:
     _ = config
 
     # Line below is needed to avoid core dump with Dask
-    matplotlib.use('Agg')
     os.environ['ANADIR'] = '/tmp/tests/ecal_calibration'
     plt.style.use(mplhep.style.LHCb2)
 
